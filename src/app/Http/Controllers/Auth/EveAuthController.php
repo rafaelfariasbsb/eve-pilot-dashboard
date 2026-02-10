@@ -62,7 +62,7 @@ class EveAuthController extends Controller
 
         $portraitUrl = $portrait['px128x128'] ?? $portrait['px64x64'] ?? null;
 
-        $isMain = !$user->characters()->exists();
+        $isMain = $character ? $character->is_main : !$user->characters()->exists();
 
         Character::updateOrCreate(
             ['character_id' => $characterId],
