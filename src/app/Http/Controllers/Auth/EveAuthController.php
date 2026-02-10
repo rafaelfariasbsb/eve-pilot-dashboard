@@ -27,10 +27,10 @@ class EveAuthController extends Controller
 
     public function callback(EsiService $esi): RedirectResponse
     {
-        $ssoUser = Socialite::driver('eveonline')->user();
+        $ssoUser = Socialite::driver('eveonline')->stateless()->user();
 
-        $characterId = (int) $ssoUser->getId();
-        $characterName = $ssoUser->getName();
+        $characterId = (int) $ssoUser->character_id;
+        $characterName = $ssoUser->character_name;
 
         $charInfo = $esi->getCharacterInfo($characterId);
         $portrait = $esi->getCharacterPortrait($characterId);

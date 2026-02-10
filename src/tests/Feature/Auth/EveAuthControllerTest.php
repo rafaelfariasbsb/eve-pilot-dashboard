@@ -33,14 +33,15 @@ class EveAuthControllerTest extends TestCase
     public function test_callback_creates_user_and_character(): void
     {
         $ssoUser = Mockery::mock('Laravel\Socialite\Contracts\User');
-        $ssoUser->shouldReceive('getId')->andReturn('95000001');
-        $ssoUser->shouldReceive('getName')->andReturn('Test Pilot');
+        $ssoUser->character_id = '95000001';
+        $ssoUser->character_name = 'Test Pilot';
         $ssoUser->token = 'test-access-token';
         $ssoUser->refreshToken = 'test-refresh-token';
         $ssoUser->expiresIn = 1200;
         $ssoUser->accessTokenResponseBody = ['scope' => 'esi-wallet.read_character_wallet.v1 esi-assets.read_assets.v1'];
 
         $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('stateless')->andReturnSelf();
         $provider->shouldReceive('user')->andReturn($ssoUser);
 
         Socialite::shouldReceive('driver')
@@ -81,14 +82,15 @@ class EveAuthControllerTest extends TestCase
         Character::factory()->create(['user_id' => $user->id, 'is_main' => true]);
 
         $ssoUser = Mockery::mock('Laravel\Socialite\Contracts\User');
-        $ssoUser->shouldReceive('getId')->andReturn('95000002');
-        $ssoUser->shouldReceive('getName')->andReturn('Alt Character');
+        $ssoUser->character_id = '95000002';
+        $ssoUser->character_name = 'Alt Character';
         $ssoUser->token = 'alt-token';
         $ssoUser->refreshToken = 'alt-refresh';
         $ssoUser->expiresIn = 1200;
         $ssoUser->accessTokenResponseBody = ['scope' => 'esi-wallet.read_character_wallet.v1'];
 
         $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('stateless')->andReturnSelf();
         $provider->shouldReceive('user')->andReturn($ssoUser);
 
         Socialite::shouldReceive('driver')
@@ -122,14 +124,15 @@ class EveAuthControllerTest extends TestCase
         ]);
 
         $ssoUser = Mockery::mock('Laravel\Socialite\Contracts\User');
-        $ssoUser->shouldReceive('getId')->andReturn('95000001');
-        $ssoUser->shouldReceive('getName')->andReturn('New Name');
+        $ssoUser->character_id = '95000001';
+        $ssoUser->character_name = 'New Name';
         $ssoUser->token = 'new-token';
         $ssoUser->refreshToken = 'new-refresh';
         $ssoUser->expiresIn = 1200;
         $ssoUser->accessTokenResponseBody = ['scope' => 'esi-wallet.read_character_wallet.v1'];
 
         $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('stateless')->andReturnSelf();
         $provider->shouldReceive('user')->andReturn($ssoUser);
 
         Socialite::shouldReceive('driver')
@@ -155,14 +158,15 @@ class EveAuthControllerTest extends TestCase
     public function test_callback_sets_first_character_as_main(): void
     {
         $ssoUser = Mockery::mock('Laravel\Socialite\Contracts\User');
-        $ssoUser->shouldReceive('getId')->andReturn('95000001');
-        $ssoUser->shouldReceive('getName')->andReturn('First Char');
+        $ssoUser->character_id = '95000001';
+        $ssoUser->character_name = 'First Char';
         $ssoUser->token = 'token';
         $ssoUser->refreshToken = 'refresh';
         $ssoUser->expiresIn = 1200;
         $ssoUser->accessTokenResponseBody = ['scope' => ''];
 
         $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('stateless')->andReturnSelf();
         $provider->shouldReceive('user')->andReturn($ssoUser);
 
         Socialite::shouldReceive('driver')
