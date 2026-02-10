@@ -84,7 +84,7 @@ class EsiService
         }
 
         $response = Http::withHeaders($headers)
-            ->retry(3, 200, function (\Exception $e) {
+            ->retry(3, 200, function (\Throwable $e) {
                 return !in_array($e->getCode(), [420, 429]);
             })
             ->get($this->baseUrl . $endpoint, array_merge($query, [
@@ -133,7 +133,7 @@ class EsiService
 
         $response = Http::withToken($character->access_token)
             ->withHeaders($headers)
-            ->retry(3, 200, function (\Exception $e) {
+            ->retry(3, 200, function (\Throwable $e) {
                 return !in_array($e->getCode(), [420, 429]);
             })
             ->get($this->baseUrl . $endpoint, array_merge($query, [
