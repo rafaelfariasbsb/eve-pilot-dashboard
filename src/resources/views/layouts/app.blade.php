@@ -21,6 +21,7 @@
         a { color: #58a6ff; }
         .badge-bpo { background-color: #1f6feb; }
         .badge-bpc { background-color: #8b949e; }
+        .pagination { --bs-pagination-bg: #161b22; --bs-pagination-color: #58a6ff; --bs-pagination-border-color: #30363d; --bs-pagination-hover-bg: #21262d; --bs-pagination-hover-color: #58a6ff; --bs-pagination-hover-border-color: #30363d; --bs-pagination-active-bg: #1f6feb; --bs-pagination-active-border-color: #1f6feb; --bs-pagination-disabled-bg: #0d1117; --bs-pagination-disabled-color: #484f58; --bs-pagination-disabled-border-color: #30363d; }
     </style>
 </head>
 <body>

@@ -63,7 +63,7 @@
         </div>
 
         <div class="mt-3">
-            {{ $blueprints->links() }}
+            {{ $blueprints->links('pagination::bootstrap-5') }}
         </div>
     @endif
 @else
