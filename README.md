@@ -258,10 +258,43 @@ Browser (User)
 - O sistema tem retry automatico com backoff
 - Se persistir, aguarde 15 minutos
 
-## Proximos Passos (Apos Validar o Piloto)
+## Testes Automatizados
 
-- [ ] Adicionar multi-character support
-- [ ] Manufacturing calculator com ME/TE
+O projeto possui uma suite completa de testes (65 testes, 129 assertions):
+
+```bash
+# Rodar todos os testes
+docker compose exec app php artisan test
+
+# Rodar por suite
+docker compose exec app php artisan test --testsuite=Unit
+docker compose exec app php artisan test --testsuite=Feature
+```
+
+| Suite | Arquivo | Testes |
+|-------|---------|--------|
+| Unit/Models | CharacterTest | 6 |
+| Unit/Models | CharacterBlueprintTest | 6 |
+| Unit/Models | UserTest | 3 |
+| Unit/Models | SdeBlueprintTest | 3 |
+| Unit/Services | EsiServiceTest | 11 |
+| Feature/Auth | EveAuthControllerTest | 6 |
+| Feature/Controllers | DashboardControllerTest | 5 |
+| Feature/Controllers | BlueprintControllerTest | 5 |
+| Feature/Jobs | SyncCharacterDataTest | 7 |
+| Feature/Commands | ImportSdeTest | 5 |
+| Feature/Routes | RouteTest | 5 |
+| **Total** | **11 arquivos** | **65 testes** |
+
+Os testes usam SQLite in-memory, Mockery para mocks, e factories para gerar dados.
+
+## Proximos Passos
+
+- [x] Suite de testes automatizados (65 testes)
+- [x] EVE SSO login/logout funcionando
+- [x] Dashboard com wallet, assets, industry jobs
+- [x] Blueprints com paginacao e custo estimado
+- [ ] Manufacturing calculator com ME/TE bonuses
 - [ ] Market price tracker por regiao
 - [ ] Real-time notifications com Laravel Reverb
 - [ ] Admin panel com Filament v4

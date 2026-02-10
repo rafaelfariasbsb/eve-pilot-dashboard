@@ -1,59 +1,78 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# EVE Pilot Dashboard - Laravel App (`src/`)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este diretorio contem a aplicacao Laravel 12 completa, montada no container Docker em `/var/www`.
 
-## About Laravel
+## Estrutura Principal
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+```
+src/
+├── app/
+│   ├── Console/Commands/
+│   │   └── ImportSde.php               # eve:import-sde - importa SDE do Fuzzwork CSV
+│   ├── Http/Controllers/
+│   │   ├── Auth/EveAuthController.php  # EVE SSO login (stateless), callback, logout
+│   │   ├── DashboardController.php     # Dashboard: wallet, assets, industry jobs
+│   │   └── BlueprintController.php     # Lista blueprints + detalhes manufacturing
+│   ├── Jobs/
+│   │   └── SyncCharacterData.php       # Job background: sync wallet, assets, blueprints
+│   ├── Models/
+│   │   ├── User.php                    # hasMany characters, mainCharacter()
+│   │   ├── Character.php               # character_id, tokens, isTokenExpired()
+│   │   ├── CharacterAsset.php          # Assets do personagem (via character_id)
+│   │   ├── CharacterBlueprint.php      # Blueprints do personagem, isBpo(), isBpc()
+│   │   ├── SdeType.php                 # Tipos de itens (PK: type_id)
+│   │   ├── SdeBlueprint.php            # Blueprints SDE (PK: blueprint_type_id)
+│   │   ├── SdeBlueprintMaterial.php    # Materiais por blueprint
+│   │   └── SdeBlueprintProduct.php     # Produtos por blueprint
+│   ├── Providers/
+│   │   └── AppServiceProvider.php      # Registra Socialite EVE Online driver
+│   └── Services/
+│       └── EsiService.php              # ESI API client (cache, ETag, retry, token refresh)
+├── config/
+│   └── services.php                    # Config eveonline (Socialite) + eve (ESI)
+├── database/
+│   ├── factories/                      # 8 factories (User, Character, Assets, Blueprints, SDE)
+│   └── migrations/                     # Migrations para todas as tabelas
+├── resources/views/
+│   ├── layouts/app.blade.php           # Layout Bootstrap 5 dark theme
+│   ├── welcome.blade.php              # Landing page
+│   ├── dashboard/index.blade.php      # Dashboard principal
+│   └── blueprints/
+│       ├── index.blade.php            # Lista de blueprints (paginacao Bootstrap 5)
+│       └── show.blade.php             # Detalhes: materiais, custo, lucro estimado
+├── routes/web.php                      # Todas as rotas
+└── tests/
+    ├── Unit/
+    │   ├── Models/                     # CharacterTest, CharacterBlueprintTest, UserTest, SdeBlueprintTest
+    │   └── Services/EsiServiceTest.php # Cache, ETag, token refresh, paginacao
+    └── Feature/
+        ├── Auth/EveAuthControllerTest.php
+        ├── Controllers/                # DashboardControllerTest, BlueprintControllerTest
+        ├── Jobs/SyncCharacterDataTest.php
+        ├── Commands/ImportSdeTest.php
+        └── Routes/RouteTest.php
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Comandos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+# Testes
+php artisan test
+php artisan test --testsuite=Unit
+php artisan test --testsuite=Feature
 
-## Learning Laravel
+# SDE Import
+php artisan eve:import-sde
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# Cache
+php artisan cache:clear
+php artisan config:clear
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Notas Tecnicas
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Socialite EVE**: Usa `SocialiteProviders/Eveonline`. O provider mapeia `character_id` e `character_name` (nao `id`/`name` padrao). O callback usa `stateless()` para evitar `InvalidStateException`.
+- **ESI retry()**: As closures de retry usam `?\Throwable` (nullable) com `throw: false` pois Laravel 12 pode passar `null` ao callback.
+- **Paginacao**: Usa `pagination::bootstrap-5` (nao Tailwind) pois o layout usa Bootstrap via CDN.
+- **Character is_main**: Preservado no re-login; calculado apenas para novos characters.
+- **Testes**: SQLite in-memory, Mockery para Socialite/ESI, factories com states (`expired()`, `alt()`, `bpo()`, `bpc()`).
